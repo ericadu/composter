@@ -5,8 +5,8 @@ class DropoffLocation{
   final String borough;
   final String siteName;
   final String location;
-  final int latitude;
-  final int longitude;
+  final double latitude;
+  final double longitude;
   final String website;
   final String servicedBy;
   final String openMonth;
@@ -31,7 +31,7 @@ class DropoffLocation{
       openMonthTo = json['OpenMonthTo'],
       notes = json['Notes'],
       phone = json['Phone'],
-      dropoffHours = (json['DropoffHoursList'] as List).map((json) => DropoffTime.fromJSON(json)).toList(),
+      dropoffHours = (json['DropOffHoursList'] as List).map((json) => DropoffTime.fromJSON(json)).toList(),
       days = json['Days']
     ;
 }
