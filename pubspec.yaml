@@ -26,6 +26,7 @@ dependencies:
   google_maps_flutter: ^0.3.0+2
   rxdart: ^0.21.0
   dio: ^2.0.18
+  geolocator: ^3.0.1
 
 dev_dependencies:
   flutter_test:

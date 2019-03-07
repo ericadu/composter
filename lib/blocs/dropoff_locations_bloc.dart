@@ -1,8 +1,9 @@
+import 'package:rxdart/rxdart.dart';
+
 import 'package:composter/blocs/bloc_provider.dart';
 import 'package:composter/models/dropoff_location.dart';
 import 'package:composter/models/dropoff_location_response.dart';
 import 'package:composter/repositories/dropoff_location_respository.dart';
-import 'package:rxdart/rxdart.dart';
 
 class DropoffLocationsBloc implements BlocBase {
   final BehaviorSubject<List<DropoffLocation>> _locationsController = BehaviorSubject<List<DropoffLocation>>();
