@@ -3,8 +3,6 @@ import 'package:composter/models/dropoff_location.dart';
 import 'package:composter/models/dropoff_location_response.dart';
 import 'package:composter/repositories/dropoff_location_respository.dart';
 
-
-
 class DropoffLocationsBloc {
   final BehaviorSubject<List<DropoffLocation>> _locationsController = 
     BehaviorSubject<List<DropoffLocation>>.seeded(<DropoffLocation>[]);
@@ -19,7 +17,7 @@ class DropoffLocationsBloc {
   }
 
   void update(DropoffLocation loc) {
-    focusController.sink.add(loc);
+    _focusController.sink.add(loc);
   }
 
   void dispose(){
