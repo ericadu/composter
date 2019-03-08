@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:composter/blocs/dropoff_locations_bloc.dart';
 import 'package:composter/models/dropoff_location.dart';
+import 'package:composter/widgets/dropoff_detail.dart';
 
 class DropoffMap extends StatefulWidget {
   @override
@@ -19,9 +20,15 @@ class DropoffMapState extends State<DropoffMap> {
     zoom: 14,
   );
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
+
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 
   void refresh() async {
@@ -39,22 +46,22 @@ class DropoffMapState extends State<DropoffMap> {
       builder: (context, AsyncSnapshot<List<DropoffLocation>> snapshot) {
         if (snapshot.hasData) {
           Set<Marker> markers = _addMarkers(snapshot.data, context);
-          return GoogleMap(
-            initialCameraPosition: _initial,
-            onMapCreated: _onMapCreated,
-            markers: markers,
-            myLocationEnabled: true,
-            trackCameraPosition: true,
+          return Stack(
+            children: <Widget>[
+              GoogleMap(
+                initialCameraPosition: _initial,
+                onMapCreated: _onMapCreated,
+                markers: markers,
+                myLocationEnabled: true,
+              ),
+              DropoffDetail(),
+            ]
           );
         } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
-        return GoogleMap(
-          initialCameraPosition: _initial,
-          onMapCreated: _onMapCreated,
-          myLocationEnabled: true,
-          trackCameraPosition: true,
-        ); 
+
+        return CircularProgressIndicator();
       }
     );
   }
@@ -74,16 +81,7 @@ class DropoffMapState extends State<DropoffMap> {
           markerId: MarkerId(loc.id.toString()),
           icon: BitmapDescriptor.defaultMarker,
           position: LatLng(loc.latitude, loc.longitude),
-          onTap: () {
-            showModalBottomSheet(context: context, builder: (BuildContext context) {
-              return Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text('Example bottom sheet'),
-                ),
-              );
-            });
-          }
+          onTap: () => bloc.focusController.sink.add(loc),
         )
       )
     );

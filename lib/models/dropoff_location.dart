@@ -20,7 +20,7 @@ class DropoffLocation{
   DropoffLocation.fromJSON(Map<String, dynamic> json)
     : id = json['ID'],
       borough = json['Borough'],
-      siteName = json['DropoffSiteName'],
+      siteName = json['DropOffSiteName'],
       location = json['Location'],
       latitude = json['Latitude'],
       longitude = json['Longitude'],
