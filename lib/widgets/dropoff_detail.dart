@@ -62,21 +62,42 @@ class DropoffDetailState extends State<DropoffDetail> {
     );
 
     var matches = regExp.allMatches(time);
-    Match match = matches.elementAt(0);
-    int hr = int.parse(match.group(1));
-    int min = int.parse(match.group(2));
-    bool pm = match.group(3).toLowerCase() == 'pm';
+    if (matches.length > 0) {
+      Match match = matches.elementAt(0);
+      int hr = int.parse(match.group(1));
+      int min = int.parse(match.group(2));
+      bool pm = match.group(3).toLowerCase() == 'pm';
 
-    return (pm ? hr + 12 : hr) * 60 + min;
+      return (pm ? hr + 12 : hr) * 60 + min;
+    }
+    
+    return 0;
+  }
+
+  bool isInRange(hr, weekdays, weekday) {
+      List<String> range = hr.operationDay.split("-");
+      weekdays.asMap().forEach((i, w) {
+        if ((range[0].contains(w) && i > (weekday - 1)) || (range[1].contains(w) && i < (weekday - 1)) ) {
+          return false;
+        }
+      });
+      return true;
   }
 
   Text isOpen(loc) {
     DateTime currentTime = new DateTime.now();
     int weekday = currentTime.weekday;
-    List<String> weekdays = ['mon', 'tues', 'wed', 'thurs', 'fri', 'sat', 'sun'];
+    List<String> weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
     for (DropoffTime hr in loc.dropoffHours) {
-      if (hr.operationDay.toLowerCase().contains(weekdays[weekday + 1])) {
+      if (hr.operationDay.toLowerCase().contains('every')) {
+        return Text('Probably Open',
+          style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.w600, fontSize: 14)
+        );
+      }
+
+      if (hr.operationDay.toLowerCase().contains(weekdays[weekday - 1]) ||
+          (hr.operationDay.split("-").length > 1 ? isInRange(hr, weekdays, weekday): false)) {
         int startTime = timeToInt(hr.hourFrom);
         int endTime = timeToInt(hr.hourTo);
         int current = (currentTime.hour * 60) + currentTime.minute;
