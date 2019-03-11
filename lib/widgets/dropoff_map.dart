@@ -84,7 +84,7 @@ class DropoffMapState extends State<DropoffMap> {
       return 1.0;
     }
 
-    return 0.5;
+    return 0.6;
   }
 
   Set<Marker> _addMarkers(List<DropoffLocation> locations, BuildContext context) {

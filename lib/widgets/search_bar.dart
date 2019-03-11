@@ -47,15 +47,11 @@ class SearchBarState extends State<SearchBar> {
         }
         return AppBar(
           centerTitle: false,
-          leading: IconButton(
-            icon: Icon(Icons.location_searching),
-            onPressed: () {
-              
-            },
-          ),
+          leading:  Icon(Icons.location_searching, color: Colors.black38),
           title: TextField(
             decoration: InputDecoration(
               hintText: "No selection.",
+              border: InputBorder.none,
             ),
             enabled: false,
           )
