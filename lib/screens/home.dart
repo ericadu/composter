@@ -10,18 +10,19 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SearchBar(),
-      body: StreamBuilder<NavigationItem>(
-        stream: navigationBloc.bottomNavController.stream,
-        initialData: navigationBloc.defaultItem,
-        builder: (BuildContext context, AsyncSnapshot<NavigationItem> snapshot) {
-          switch(snapshot.data) {
-            case NavigationItem.MAP:
-              return DropoffMap();
-            case NavigationItem.INFO:
-              return CompostGuide();
-          }
-        }
-      ),
+      body: DropoffMap(),
+      // body: StreamBuilder<NavigationItem>(
+      //   stream: navigationBloc.bottomNavController.stream,
+      //   initialData: navigationBloc.defaultItem,
+      //   builder: (BuildContext context, AsyncSnapshot<NavigationItem> snapshot) {
+      //     switch(snapshot.data) {
+      //       case NavigationItem.MAP:
+      //         return DropoffMap();
+      //       case NavigationItem.INFO:
+      //         return CompostGuide();
+      //     }
+      //   }
+      // ),
       bottomNavigationBar: BottomNavBar(),
     );
   }
