@@ -20,11 +20,6 @@ class DropoffMapState extends State<DropoffMap> {
     zoom: 14,
   );
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
   @override
   void dispose() {
     bloc.dispose();
@@ -72,6 +67,26 @@ class DropoffMapState extends State<DropoffMap> {
     refresh();
   }
 
+  BitmapDescriptor _getLocator(DropoffLocation loc) {
+    Status status = loc.getStatus();
+
+    if (status == Status.open || status == Status.probably_open) {
+      return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
+    }
+
+    return BitmapDescriptor.defaultMarker;
+  }
+
+  double _getAlpha(DropoffLocation loc) {
+    Status status = loc.getStatus();
+
+    if (status == Status.open || status == Status.probably_open) {
+      return 1.0;
+    }
+
+    return 0.5;
+  }
+
   Set<Marker> _addMarkers(List<DropoffLocation> locations, BuildContext context) {
     Set<Marker> markers = Set<Marker>();
 
@@ -79,9 +94,10 @@ class DropoffMapState extends State<DropoffMap> {
       markers.add(
         Marker(
           markerId: MarkerId(loc.id.toString()),
-          icon: BitmapDescriptor.defaultMarker,
+          icon: _getLocator(loc),
           position: LatLng(loc.latitude, loc.longitude),
           onTap: () => bloc.focusController.sink.add(loc),
+          alpha: _getAlpha(loc),
         )
       )
     );

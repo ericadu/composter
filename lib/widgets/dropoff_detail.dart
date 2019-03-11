@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:composter/models/dropoff_location.dart';
-import 'package:composter/models/dropoff_time.dart';
 import 'package:composter/blocs/dropoff_locations_bloc.dart';
 
 class DropoffDetail extends StatefulWidget {
@@ -54,69 +53,30 @@ class DropoffDetailState extends State<DropoffDetail> {
     );
   }
 
-  int timeToInt(String time) {
-    RegExp regExp = new RegExp(
-      r"^(1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm])$",
-      caseSensitive: false,
-      multiLine: false,
-    );
+  Text isOpen(DropoffLocation loc) {
+    Status status = loc.getStatus();
 
-    var matches = regExp.allMatches(time);
-    if (matches.length > 0) {
-      Match match = matches.elementAt(0);
-      int hr = int.parse(match.group(1));
-      int min = int.parse(match.group(2));
-      bool pm = match.group(3).toLowerCase() == 'pm';
-
-      return (pm ? hr + 12 : hr) * 60 + min;
-    }
-    
-    return 0;
-  }
-
-  bool isInRange(hr, weekdays, weekday) {
-      List<String> range = hr.operationDay.split("-");
-      weekdays.asMap().forEach((i, w) {
-        if ((range[0].contains(w) && i > (weekday - 1)) || (range[1].contains(w) && i < (weekday - 1)) ) {
-          return false;
-        }
-      });
-      return true;
-  }
-
-  Text isOpen(loc) {
-    DateTime currentTime = new DateTime.now();
-    int weekday = currentTime.weekday;
-    List<String> weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-
-    for (DropoffTime hr in loc.dropoffHours) {
-      if (hr.operationDay.toLowerCase().contains('every')) {
+    switch(status) {
+      case Status.open:
+        return Text('Open',
+          style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 14)
+        );
+      case Status.probably_open:
         return Text('Probably Open',
           style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.w600, fontSize: 14)
         );
-      }
-
-      if (hr.operationDay.toLowerCase().contains(weekdays[weekday - 1]) ||
-          (hr.operationDay.split("-").length > 1 ? isInRange(hr, weekdays, weekday): false)) {
-        int startTime = timeToInt(hr.hourFrom);
-        int endTime = timeToInt(hr.hourTo);
-        int current = (currentTime.hour * 60) + currentTime.minute;
-
-        if (current > startTime && current < endTime) {
-          if (loc.siteName.contains('CLOSED')) {
-            return Text('Probably Closed',
-              style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.w600, fontSize: 14)
-            );
-          }
-          return Text('Open',
-            style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 14)
-          );
-        }
-      }
+      case Status.probably_closed:
+        return Text('Probably Closed',
+          style: TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.w600, fontSize: 14)
+        );
+      case Status.closed:
+        return Text('Closed',
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600, fontSize: 14)
+        );
     }
 
-    return Text('Closed',
-      style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600, fontSize: 14)
+    return Text('Unknown',
+      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 14)
     );
   }
 
