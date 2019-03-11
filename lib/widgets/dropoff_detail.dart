@@ -12,7 +12,7 @@ class DropoffDetail extends StatefulWidget {
 class DropoffDetailState extends State<DropoffDetail> {
   @override
   void dispose() {
-    bloc.dispose();
+    // bloc.dispose();
     super.dispose();
   }
 

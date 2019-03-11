@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:composter/blocs/dropoff_locations_bloc.dart';
 import 'package:composter/models/dropoff_location.dart';
-import 'package:composter/widgets/dropoff_detail.dart';
 
 class DropoffMap extends StatefulWidget {
   @override
   State<DropoffMap> createState() => DropoffMapState();
 }
 
-class DropoffMapState extends State<DropoffMap> {
+class DropoffMapState extends State<DropoffMap> with AutomaticKeepAliveClientMixin {
   Completer<GoogleMapController> _controller = Completer();
   GoogleMapController mapController;
 
@@ -22,9 +21,12 @@ class DropoffMapState extends State<DropoffMap> {
 
   @override
   void dispose() {
-    bloc.dispose();
+    //bloc.dispose();
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   void refresh() async {
     bloc.getLocations();
@@ -41,21 +43,15 @@ class DropoffMapState extends State<DropoffMap> {
       builder: (context, AsyncSnapshot<List<DropoffLocation>> snapshot) {
         if (snapshot.hasData) {
           Set<Marker> markers = _addMarkers(snapshot.data, context);
-          return Stack(
-            children: <Widget>[
-              GoogleMap(
-                initialCameraPosition: _initial,
-                onMapCreated: _onMapCreated,
-                markers: markers,
-                myLocationEnabled: true,
-              ),
-              DropoffDetail(),
-            ]
+          return GoogleMap(
+            initialCameraPosition: _initial,
+            onMapCreated: _onMapCreated,
+            markers: markers,
+            myLocationEnabled: true,
           );
         } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
-
         return CircularProgressIndicator();
       }
     );
