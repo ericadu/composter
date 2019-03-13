@@ -1,38 +1,93 @@
 import 'package:flutter/material.dart';
 import 'package:composter/blocs/navigation_bloc.dart';
-import 'package:composter/widgets/compost_guide.dart';
-import 'package:composter/widgets/dropoff_detail.dart';
-import 'package:composter/widgets/dropoff_map.dart';
-import 'package:composter/widgets/search_bar.dart';
-import 'package:composter/widgets/bottom_nav_bar.dart';
+import 'package:composter/screens/dropoff.dart';
+import 'package:composter/screens/guide.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget{
+  @override
+  HomePageState createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+  final List<Widget> pages = [
+    DropoffScreen(
+      key: PageStorageKey(NavigationItem.MAP),
+    ),
+    GuideScreen(
+      key: PageStorageKey(NavigationItem.INFO),
+    ),
+  ];  
+
+  final PageStorageBucket bucket = PageStorageBucket();
+
+  @override
+  void dispose() {
+    navigationBloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<NavigationItem>(
       stream: navigationBloc.bottomNavController.stream,
       initialData: navigationBloc.defaultItem,
-      builder: (BuildContext context, AsyncSnapshot<NavigationItem> snapshot) {
-        switch(snapshot.data) {
-          case NavigationItem.MAP:
-            return Scaffold(
-              appBar:SearchBar(),
-              body: Stack(
-                children: <Widget>[
-                  DropoffMap(),
-                  DropoffDetail()
-                ]
-              ),
-              bottomNavigationBar: BottomNavBar(),
-            );
-          case NavigationItem.INFO:
-            return Scaffold(
-              appBar: AppBar(title: Text('Compost Guide')),
-              body: CompostGuide(),
-              bottomNavigationBar: BottomNavBar(),
-            );
-        }
+      builder: (context, AsyncSnapshot<NavigationItem> snapshot) {
+        return Scaffold(
+          bottomNavigationBar: _bottomNavigationBar(snapshot.data),
+          body: PageStorage(
+            child: pages[snapshot.data.index],
+            bucket: bucket,
+          )
+        );
       }
     );
   }
+
+  Widget _bottomNavigationBar(NavigationItem item) {
+    return BottomNavigationBar(
+      currentIndex: item.index,
+      items: [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.map),
+          title: Text('Map'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.info),
+          title: Text('Guide')
+        )
+      ],
+      onTap: navigationBloc.pickItem
+    );
+  }
 }
+
+// class HomePage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<NavigationItem>(
+//       stream: navigationBloc.bottomNavController.stream,
+//       initialData: navigationBloc.defaultItem,
+//       builder: (BuildContext context, AsyncSnapshot<NavigationItem> snapshot) {
+//         switch(snapshot.data) {
+//           case NavigationItem.MAP:
+//             return Scaffold(
+//               appBar:SearchBar(),
+//               body: Stack(
+//                 children: <Widget>[
+//                   DropoffMap(),
+//                   DropoffDetail()
+//                 ]
+//               ),
+//               bottomNavigationBar: BottomNavBar(),
+//             );
+//           case NavigationItem.INFO:
+//             return Scaffold(
+//               appBar: AppBar(title: Text('Compost Guide')),
+//               body: CompostGuide(),
+//               bottomNavigationBar: BottomNavBar(),
+//             );
+//         }
+//       }
+//     );
+//   }
+// }
