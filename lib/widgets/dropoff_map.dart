@@ -38,6 +38,7 @@ class DropoffMapState extends State<DropoffMap> with AutomaticKeepAliveClientMix
   
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StreamBuilder<List<DropoffLocation>>(
       stream: bloc.locationsController.stream,
       builder: (context, AsyncSnapshot<List<DropoffLocation>> snapshot) {

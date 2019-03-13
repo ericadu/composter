@@ -19,7 +19,7 @@ class SearchBar extends StatefulWidget implements PreferredSizeWidget {
 class SearchBarState extends State<SearchBar> {
   @override
   void dispose() {
-    bloc.dispose();
+    //bloc.dispose();
     super.dispose();
   }
 
