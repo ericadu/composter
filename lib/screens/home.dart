@@ -60,34 +60,3 @@ class HomePageState extends State<HomePage> {
     );
   }
 }
-
-// class HomePage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder<NavigationItem>(
-//       stream: navigationBloc.bottomNavController.stream,
-//       initialData: navigationBloc.defaultItem,
-//       builder: (BuildContext context, AsyncSnapshot<NavigationItem> snapshot) {
-//         switch(snapshot.data) {
-//           case NavigationItem.MAP:
-//             return Scaffold(
-//               appBar:SearchBar(),
-//               body: Stack(
-//                 children: <Widget>[
-//                   DropoffMap(),
-//                   DropoffDetail()
-//                 ]
-//               ),
-//               bottomNavigationBar: BottomNavBar(),
-//             );
-//           case NavigationItem.INFO:
-//             return Scaffold(
-//               appBar: AppBar(title: Text('Compost Guide')),
-//               body: CompostGuide(),
-//               bottomNavigationBar: BottomNavBar(),
-//             );
-//         }
-//       }
-//     );
-//   }
-// }
